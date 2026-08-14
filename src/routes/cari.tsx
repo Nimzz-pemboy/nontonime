@@ -1,0 +1,59 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { AnimeGrid } from "@/components/anime/AnimeGrid";
+import { ErrorState, LoadingState, SectionTitle } from "@/components/anime/StateViews";
+import { searchQuery } from "@/lib/queries";
+
+export const Route = createFileRoute("/cari")({
+  validateSearch: (search: Record<string, unknown>) => ({ q: String(search['q'] ?? "") }),
+  head: () => ({
+    meta: [
+      { title: "Cari Anime — Nontonime" },
+      { name: "description", content: "Cari judul anime subtitle Indonesia dari katalog Nontonime." },
+      { property: "og:title", content: "Cari Anime — Nontonime" },
+      { property: "og:description", content: "Cari judul anime subtitle Indonesia dari katalog Nontonime." },
+    ],
+  }),
+  component: SearchPage,
+});
+
+function SearchPage() {
+  const { q } = Route.useSearch();
+  const navigate = useNavigate();
+  const [term, setTerm] = useState(q);
+  const { data, isPending, error, refetch } = useQuery(searchQuery(q));
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
+      <SectionTitle title="Cari Anime" icon="fa-solid fa-magnifying-glass" />
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          navigate({ to: "/cari", search: { q: term.trim() } });
+        }}
+        className="flex gap-2"
+      >
+        <input
+          value={term}
+          onChange={(event) => setTerm(event.target.value)}
+          placeholder="Ketik judul anime"
+          className="h-11 flex-1 rounded-md border border-border bg-card px-4 text-sm text-card-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+        />
+        <button className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+          <i className="fa-solid fa-magnifying-glass" />
+          Cari
+        </button>
+      </form>
+
+      {!q ? (
+        <p className="py-12 text-center text-sm text-muted-foreground">
+          Masukkan kata kunci untuk mulai mencari.
+        </p>
+      ) : null}
+      {q && isPending ? <LoadingState label="Mencari anime" /> : null}
+      {error ? <ErrorState error={error} onRetry={() => refetch()} /> : null}
+      {q && data ? <AnimeGrid items={data.data.animeList} /> : null}
+    </div>
+  );
+}
