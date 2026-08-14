@@ -22,7 +22,7 @@ export default defineConfig({
     }),
     nitroV2Plugin({
       config: {
-        preset: "node-server",
+        preset: "vercel",
       },
     }),
     viteReact(),
