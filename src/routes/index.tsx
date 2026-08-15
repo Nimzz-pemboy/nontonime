@@ -29,7 +29,7 @@ function HomePage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 px-4 py-8">
-      <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-8">
+      <section className="relative overflow-hidden border-2 border-foreground bg-secondary p-8 shadow-brutal">
         <video
           autoPlay
           muted
@@ -42,7 +42,7 @@ function HomePage() {
         </video>
         <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-background/50" />
         <div className="relative">
-          <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="font-display text-3xl font-extrabold uppercase tracking-tight text-foreground sm:text-4xl">
             Nonton anime subtitle Indonesia
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
@@ -53,14 +53,14 @@ function HomePage() {
             <Link
               to="/ongoing"
               search={{ page: 1 }}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="shadow-brutal-press inline-flex items-center gap-2 border-2 border-foreground bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-brutal-sm"
             >
               <i className="fa-solid fa-tower-broadcast" />
               Anime Ongoing
             </Link>
             <Link
               to="/jadwal"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground transition-colors hover:border-primary"
+              className="shadow-brutal-press inline-flex items-center gap-2 border-2 border-foreground bg-card px-4 py-2 text-sm font-bold text-card-foreground shadow-brutal-sm"
             >
               <i className="fa-solid fa-calendar-days" />
               Jadwal Rilis

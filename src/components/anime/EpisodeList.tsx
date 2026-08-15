@@ -17,16 +17,16 @@ export function EpisodeList({
   }
 
   return (
-    <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
+    <ul className="divide-y-2 divide-foreground border-2 border-foreground bg-card shadow-brutal-sm">
       {episodes.map((episode) => {
         const isActive = episode.episodeId === activeEpisodeId;
         return (
           <li
             key={episode.episodeId}
-            className={cn("flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3", isActive && "bg-secondary/50")}
+            className={cn("flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3", isActive && "bg-accent")}
           >
             <div className="flex min-w-0 flex-1 items-center gap-3">
-              <span className="text-sm font-semibold text-card-foreground">Episode {episode.eps}</span>
+              <span className="text-sm font-bold text-card-foreground">Episode {episode.eps}</span>
               {episode.views ? (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                   <i className="fa-solid fa-eye" />
@@ -42,10 +42,8 @@ export function EpisodeList({
                 to="/watch/$episodeId"
                 params={{ episodeId: episode.episodeId }}
                 className={cn(
-                  "inline-flex h-9 items-center gap-2 rounded-md px-3 text-xs font-semibold transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border text-card-foreground hover:border-primary hover:text-primary",
+                  "shadow-brutal-press inline-flex h-9 items-center gap-2 border-2 border-foreground px-3 text-xs font-bold shadow-brutal-sm",
+                  isActive ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground",
                 )}
               >
                 <i className="fa-solid fa-play text-[10px]" />

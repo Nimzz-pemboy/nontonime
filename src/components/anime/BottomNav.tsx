@@ -10,14 +10,14 @@ const TABS = [
 
 export function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-foreground bg-background pb-[env(safe-area-inset-bottom)] lg:hidden">
       {TABS.map((tab) => (
         <Link
           key={tab.to}
           to={tab.to}
           activeOptions={{ exact: tab.exact }}
-          activeProps={{ className: "text-primary" }}
-          className="flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium text-muted-foreground transition-colors"
+          activeProps={{ className: "bg-primary text-primary-foreground" }}
+          className="flex flex-1 flex-col items-center gap-1 border-r-2 border-foreground py-2 text-[11px] font-bold text-muted-foreground transition-colors last:border-r-0"
         >
           <i className={`${tab.icon} text-lg`} />
           {tab.label}

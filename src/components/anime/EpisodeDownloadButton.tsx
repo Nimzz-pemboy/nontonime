@@ -21,13 +21,13 @@ export function EpisodeDownloadButton({
       <PopoverTrigger asChild>
         <button
           aria-label={`Download Episode ${episode.eps}`}
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border text-card-foreground transition-colors hover:border-primary hover:text-primary"
+          className="shadow-brutal-press inline-flex h-9 w-9 shrink-0 items-center justify-center border-2 border-foreground bg-card text-card-foreground shadow-brutal-sm"
         >
           <i className="fa-solid fa-download text-xs" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-72 space-y-3">
-        <p className="text-sm font-semibold text-popover-foreground">Download Episode {episode.eps}</p>
+        <p className="text-sm font-bold text-popover-foreground">Download Episode {episode.eps}</p>
 
         {isPending ? (
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -43,7 +43,7 @@ export function EpisodeDownloadButton({
               <Link
                 to="/download/$batchId"
                 params={{ batchId }}
-                className="inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline"
+                className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:underline"
               >
                 <i className="fa-solid fa-box-archive" />
                 Buka batch download
@@ -54,19 +54,19 @@ export function EpisodeDownloadButton({
           <div className="max-h-64 space-y-3 overflow-y-auto">
             {formats.map((format) => (
               <div key={format.title} className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
                   {format.title}
                 </p>
                 {format.qualities.map((quality) => (
                   <div key={quality.title} className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-xs font-medium text-popover-foreground">{quality.title}</span>
+                    <span className="text-xs font-bold text-popover-foreground">{quality.title}</span>
                     {quality.urls.map((link) => (
                       <a
                         key={link.url}
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-md border border-border px-2 py-1 text-[11px] font-medium text-popover-foreground transition-colors hover:border-primary hover:text-primary"
+                        className="border-2 border-foreground px-2 py-1 text-[11px] font-bold text-popover-foreground transition-colors hover:bg-accent"
                       >
                         {link.title}
                       </a>

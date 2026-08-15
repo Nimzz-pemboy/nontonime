@@ -25,7 +25,7 @@ export const Route = createFileRoute("/anime/$animeId")({
 
 function Pill({ icon, text }: { icon?: string; text: string }) {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-card-foreground">
+    <span className="inline-flex shrink-0 items-center gap-1.5 border-2 border-foreground bg-card px-3 py-1 text-xs font-bold text-card-foreground">
       {icon ? <i className={`${icon} text-primary`} /> : null}
       {text}
     </span>
@@ -66,10 +66,8 @@ function SubscribeButton() {
     <button
       onClick={() => setSubscribed((value) => !value)}
       className={cn(
-        "inline-flex w-full items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-semibold transition-colors sm:w-auto",
-        subscribed
-          ? "border-primary bg-secondary text-secondary-foreground"
-          : "border-border bg-card text-card-foreground hover:border-primary",
+        "shadow-brutal-press inline-flex w-full items-center justify-center gap-2 border-2 border-foreground px-4 py-3 text-sm font-bold shadow-brutal-sm sm:w-auto",
+        subscribed ? "bg-secondary text-secondary-foreground" : "bg-card text-card-foreground",
       )}
     >
       <i className={subscribed ? "fa-solid fa-bell" : "fa-regular fa-bell"} />
@@ -114,19 +112,19 @@ function AnimeDetailPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 overflow-x-hidden px-4 pb-8">
-      <div className="relative -mx-4 sm:mx-0 sm:overflow-hidden sm:rounded-2xl sm:border sm:border-border">
-        <div className="relative h-64 w-full overflow-hidden sm:h-80">
+      <div className="relative -mx-4 sm:mx-0 sm:overflow-hidden sm:border-2 sm:border-foreground">
+        <div className="relative h-64 w-full overflow-hidden border-b-2 border-foreground sm:h-80">
           <img src={anime.poster} alt={anime.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
           {anime.status ? (
-            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
+            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 border-2 border-foreground bg-background px-3 py-1 text-xs font-bold text-foreground">
               <i className={cn("fa-solid text-primary", isCompleted ? "fa-circle-check" : "fa-tower-broadcast")} />
               {anime.status}
             </span>
           ) : null}
         </div>
         <div className="relative -mt-14 space-y-1 px-4 sm:-mt-16">
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground drop-shadow-sm sm:text-4xl">
+          <h1 className="font-display text-2xl font-extrabold uppercase tracking-tight text-foreground drop-shadow-sm sm:text-4xl">
             {anime.title}
           </h1>
           {anime.japanese ? <p className="text-sm text-muted-foreground">{anime.japanese}</p> : null}
@@ -152,7 +150,7 @@ function AnimeDetailPage() {
                 to="/genre/$genreId"
                 params={{ genreId: genre.genreId }}
                 search={{ page: 1 }}
-                className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-card-foreground transition-colors hover:border-primary hover:text-primary"
+                className="border-2 border-foreground bg-card px-3 py-1 text-xs font-bold text-card-foreground transition-colors hover:bg-accent"
               >
                 {genre.title}
               </Link>
@@ -165,7 +163,7 @@ function AnimeDetailPage() {
             <Link
               to="/watch/$episodeId"
               params={{ episodeId: primaryTarget.episodeId }}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
+              className="shadow-brutal-press inline-flex w-full items-center justify-center gap-2 border-2 border-foreground bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-brutal-sm sm:w-auto"
             >
               <i className="fa-solid fa-play" />
               {primaryLabel}
@@ -178,7 +176,7 @@ function AnimeDetailPage() {
           <Link
             to="/download/$batchId"
             params={{ batchId }}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
+            className="inline-flex items-center gap-2 border-2 border-foreground bg-accent px-3 py-2 text-sm font-bold text-accent-foreground"
           >
             <i className="fa-solid fa-box-archive" />
             Batch download (semua episode)
