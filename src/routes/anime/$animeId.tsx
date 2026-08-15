@@ -113,7 +113,7 @@ function AnimeDetailPage() {
   const batchId = anime.batch?.batchId ?? null;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-10 pb-8">
+    <div className="mx-auto max-w-7xl space-y-10 overflow-x-hidden px-4 pb-8">
       <div className="relative -mx-4 sm:mx-0 sm:overflow-hidden sm:rounded-2xl sm:border sm:border-border">
         <div className="relative h-64 w-full overflow-hidden sm:h-80">
           <img src={anime.poster} alt={anime.title} className="h-full w-full object-cover" />
@@ -133,7 +133,7 @@ function AnimeDetailPage() {
         </div>
       </div>
 
-      <div className="space-y-6 px-4">
+      <div className="space-y-6">
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {anime.score ? <Pill icon="fa-solid fa-star" text={anime.score} /> : null}
           {anime.studios ? <Pill text={anime.studios} /> : null}

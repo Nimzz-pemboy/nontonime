@@ -25,10 +25,14 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+    <>
+      {open ? (
+        <div onClick={() => setOpen(false)} aria-hidden="true" className="fixed inset-0 z-30 lg:hidden" />
+      ) : null}
+      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-          <i className="fa-solid fa-play text-primary" />
+          <img src="/logo.svg" alt="Nontonime" className="h-7 w-7 rounded-md" />
           Nontonime
         </Link>
 
@@ -99,6 +103,7 @@ export function SiteHeader() {
           </div>
         </div>
       ) : null}
-    </header>
+      </header>
+    </>
   );
 }
