@@ -48,6 +48,7 @@ export interface EpisodeListItem {
   eps: number;
   date?: string;
   episodeId: string;
+  views?: number | string | null;
 }
 
 export interface AnimeDetail {
@@ -62,11 +63,19 @@ export interface AnimeDetail {
   duration: string;
   aired: string;
   studios: string;
+  views?: number | string | null;
   batch: { batchId: string; title?: string } | null;
   synopsis: { paragraphs: string[] };
   genreList: Genre[];
   episodeList: EpisodeListItem[];
   recommendedAnimeList?: AnimeCardData[];
+}
+
+export interface DownloadFormatGroup {
+  formats: {
+    title: string;
+    qualities: { title: string; size: string; urls: { title: string; url: string }[] }[];
+  }[];
 }
 
 export interface ServerItem {
@@ -89,6 +98,7 @@ export interface EpisodeDetail {
   hasNextEpisode: boolean;
   nextEpisode: { episodeId: string } | null;
   server: { qualities: QualityGroup[] };
+  downloadUrl?: DownloadFormatGroup | null;
   info?: Record<string, unknown>;
 }
 
@@ -110,10 +120,5 @@ export interface BatchDetail {
   producers?: string;
   aired?: string;
   genreList?: Genre[];
-  downloadUrl: {
-    formats: {
-      title: string;
-      qualities: { title: string; size: string; urls: { title: string; url: string }[] }[];
-    }[];
-  };
+  downloadUrl: DownloadFormatGroup;
 }

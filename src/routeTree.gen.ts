@@ -13,10 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CariRouteImport } from './routes/cari'
 import { Route as JadwalRouteImport } from './routes/jadwal'
 import { Route as OngoingRouteImport } from './routes/ongoing'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RiwayatRouteImport } from './routes/riwayat'
 import { Route as TamatRouteImport } from './routes/tamat'
 import { Route as AnimeAnimeIdRouteImport } from './routes/anime/$animeId'
 import { Route as DownloadBatchIdRouteImport } from './routes/download/$batchId'
+import { Route as DownloadIndexRouteImport } from './routes/download/index'
 import { Route as GenreIndexRouteImport } from './routes/genre/index'
 import { Route as GenreGenreIdRouteImport } from './routes/genre/$genreId'
 import { Route as WatchEpisodeIdRouteImport } from './routes/watch/$episodeId'
@@ -41,6 +43,11 @@ const OngoingRoute = OngoingRouteImport.update({
   path: '/ongoing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RiwayatRoute = RiwayatRouteImport.update({
   id: '/riwayat',
   path: '/riwayat',
@@ -59,6 +66,11 @@ const AnimeAnimeIdRoute = AnimeAnimeIdRouteImport.update({
 const DownloadBatchIdRoute = DownloadBatchIdRouteImport.update({
   id: '/download/$batchId',
   path: '/download/$batchId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadIndexRoute = DownloadIndexRouteImport.update({
+  id: '/download/',
+  path: '/download/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GenreIndexRoute = GenreIndexRouteImport.update({
@@ -82,25 +94,29 @@ export interface FileRoutesByFullPath {
   '/cari': typeof CariRoute
   '/jadwal': typeof JadwalRoute
   '/ongoing': typeof OngoingRoute
+  '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
   '/watch/$episodeId': typeof WatchEpisodeIdRoute
-  '/genre/': typeof GenreIndexRoute
+  '/download': typeof DownloadIndexRoute
+  '/genre': typeof GenreIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cari': typeof CariRoute
   '/jadwal': typeof JadwalRoute
   '/ongoing': typeof OngoingRoute
+  '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
   '/watch/$episodeId': typeof WatchEpisodeIdRoute
+  '/download': typeof DownloadIndexRoute
   '/genre': typeof GenreIndexRoute
 }
 export interface FileRoutesById {
@@ -109,12 +125,14 @@ export interface FileRoutesById {
   '/cari': typeof CariRoute
   '/jadwal': typeof JadwalRoute
   '/ongoing': typeof OngoingRoute
+  '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
   '/watch/$episodeId': typeof WatchEpisodeIdRoute
+  '/download/': typeof DownloadIndexRoute
   '/genre/': typeof GenreIndexRoute
 }
 export interface FileRouteTypes {
@@ -124,25 +142,29 @@ export interface FileRouteTypes {
     | '/cari'
     | '/jadwal'
     | '/ongoing'
+    | '/profil'
     | '/riwayat'
     | '/tamat'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
     | '/watch/$episodeId'
-    | '/genre/'
+    | '/download'
+    | '/genre'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cari'
     | '/jadwal'
     | '/ongoing'
+    | '/profil'
     | '/riwayat'
     | '/tamat'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
     | '/watch/$episodeId'
+    | '/download'
     | '/genre'
   id:
     | '__root__'
@@ -150,12 +172,14 @@ export interface FileRouteTypes {
     | '/cari'
     | '/jadwal'
     | '/ongoing'
+    | '/profil'
     | '/riwayat'
     | '/tamat'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
     | '/watch/$episodeId'
+    | '/download/'
     | '/genre/'
   fileRoutesById: FileRoutesById
 }
@@ -164,12 +188,14 @@ export interface RootRouteChildren {
   CariRoute: typeof CariRoute
   JadwalRoute: typeof JadwalRoute
   OngoingRoute: typeof OngoingRoute
+  ProfilRoute: typeof ProfilRoute
   RiwayatRoute: typeof RiwayatRoute
   TamatRoute: typeof TamatRoute
   AnimeAnimeIdRoute: typeof AnimeAnimeIdRoute
   DownloadBatchIdRoute: typeof DownloadBatchIdRoute
   GenreGenreIdRoute: typeof GenreGenreIdRoute
   WatchEpisodeIdRoute: typeof WatchEpisodeIdRoute
+  DownloadIndexRoute: typeof DownloadIndexRoute
   GenreIndexRoute: typeof GenreIndexRoute
 }
 
@@ -203,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OngoingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/riwayat': {
       id: '/riwayat'
       path: '/riwayat'
@@ -229,6 +262,13 @@ declare module '@tanstack/react-router' {
       path: '/download/$batchId'
       fullPath: '/download/$batchId'
       preLoaderRoute: typeof DownloadBatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download/': {
+      id: '/download/'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/genre/': {
@@ -260,12 +300,14 @@ const rootRouteChildren: RootRouteChildren = {
   CariRoute: CariRoute,
   JadwalRoute: JadwalRoute,
   OngoingRoute: OngoingRoute,
+  ProfilRoute: ProfilRoute,
   RiwayatRoute: RiwayatRoute,
   TamatRoute: TamatRoute,
   AnimeAnimeIdRoute: AnimeAnimeIdRoute,
   DownloadBatchIdRoute: DownloadBatchIdRoute,
   GenreGenreIdRoute: GenreGenreIdRoute,
   WatchEpisodeIdRoute: WatchEpisodeIdRoute,
+  DownloadIndexRoute: DownloadIndexRoute,
   GenreIndexRoute: GenreIndexRoute,
 }
 export const routeTree = rootRouteImport

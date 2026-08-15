@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "../components/anime/SiteHeader";
 import { SiteFooter } from "../components/anime/SiteFooter";
+import { BottomNav } from "../components/anime/BottomNav";
 import { siteConfig } from "../lib/site-config";
 
 function NotFoundComponent() {
@@ -143,11 +144,12 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col bg-background">
         <SiteHeader />
-        <main className="flex-1">
+        <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
         <SiteFooter />
+        <BottomNav />
       </div>
     </QueryClientProvider>
   );

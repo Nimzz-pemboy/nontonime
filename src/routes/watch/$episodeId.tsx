@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { VideoPlayer } from "@/components/anime/VideoPlayer";
+import { EpisodeList } from "@/components/anime/EpisodeList";
 import { ErrorState, LoadingState } from "@/components/anime/StateViews";
 import { animeDetailQuery, episodeQuery, streamQuery } from "@/lib/queries";
 import { saveHistory } from "@/lib/history";
@@ -72,102 +73,119 @@ function WatchPage() {
     );
 
   const data = episode.data.data;
+  const episodes = anime.data?.data.episodeList ?? [];
+  const batchId = anime.data?.data.batch?.batchId ?? null;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-      <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-        {data.title}
-      </h1>
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="lg:grid lg:grid-cols-[1fr_320px] lg:items-start lg:gap-6">
+        <div className="space-y-6">
+          <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            {data.title}
+          </h1>
 
-      {stream.error ? (
-        <ErrorState error={stream.error} onRetry={() => stream.refetch()} />
-      ) : (
-        <VideoPlayer src={stream.data?.data.url ?? null} />
-      )}
+          {stream.error ? (
+            <ErrorState error={stream.error} onRetry={() => stream.refetch()} />
+          ) : (
+            <VideoPlayer src={stream.data?.data.url ?? null} />
+          )}
 
-      <div className="space-y-4 rounded-xl border border-border bg-card p-4">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kualitas</p>
-          <div className="flex flex-wrap gap-2">
-            {qualities.map((item) => (
-              <button
-                key={item.title}
-                onClick={() => {
-                  setQuality(item.title);
-                  setServerId(item.serverList[0]?.serverId ?? null);
-                }}
-                className={
-                  item.title === quality
-                    ? "rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground"
-                    : "rounded-md border border-border px-3 py-1.5 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
-                }
-              >
-                {item.title}
-              </button>
-            ))}
+          <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kualitas</p>
+              <div className="flex flex-wrap gap-2">
+                {qualities.map((item) => (
+                  <button
+                    key={item.title}
+                    onClick={() => {
+                      setQuality(item.title);
+                      setServerId(item.serverList[0]?.serverId ?? null);
+                    }}
+                    className={
+                      item.title === quality
+                        ? "rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground"
+                        : "rounded-md border border-border px-3 py-1.5 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
+                    }
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Server</p>
+              <div className="flex flex-wrap gap-2">
+                {activeServers.map((server) => (
+                  <button
+                    key={server.serverId}
+                    onClick={() => setServerId(server.serverId)}
+                    className={
+                      server.serverId === serverId
+                        ? "rounded-md bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary-foreground"
+                        : "rounded-md border border-border px-3 py-1.5 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
+                    }
+                  >
+                    {server.title.trim()}
+                  </button>
+                ))}
+                {activeServers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Server tidak tersedia untuk kualitas ini.</p>
+                ) : null}
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Server</p>
-          <div className="flex flex-wrap gap-2">
-            {activeServers.map((server) => (
-              <button
-                key={server.serverId}
-                onClick={() => setServerId(server.serverId)}
-                className={
-                  server.serverId === serverId
-                    ? "rounded-md bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary-foreground"
-                    : "rounded-md border border-border px-3 py-1.5 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
-                }
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {data.hasPrevEpisode && data.prevEpisode ? (
+              <Link
+                to="/watch/$episodeId"
+                params={{ episodeId: data.prevEpisode.episodeId }}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
               >
-                {server.title.trim()}
-              </button>
-            ))}
-            {activeServers.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Server tidak tersedia untuk kualitas ini.</p>
+                <i className="fa-solid fa-backward-step" />
+                Episode sebelumnya
+              </Link>
+            ) : (
+              <span />
+            )}
+
+            {animeId ? (
+              <Link
+                to="/anime/$animeId"
+                params={{ animeId }}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
+              >
+                <i className="fa-solid fa-list" />
+                Semua episode
+              </Link>
             ) : null}
+
+            {data.hasNextEpisode && data.nextEpisode ? (
+              <Link
+                to="/watch/$episodeId"
+                params={{ episodeId: data.nextEpisode.episodeId }}
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Episode selanjutnya
+                <i className="fa-solid fa-forward-step" />
+              </Link>
+            ) : (
+              <span />
+            )}
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        {data.hasPrevEpisode && data.prevEpisode ? (
-          <Link
-            to="/watch/$episodeId"
-            params={{ episodeId: data.prevEpisode.episodeId }}
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
-          >
-            <i className="fa-solid fa-backward-step" />
-            Episode sebelumnya
-          </Link>
-        ) : (
-          <span />
-        )}
-
-        {animeId ? (
-          <Link
-            to="/anime/$animeId"
-            params={{ animeId }}
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:border-primary"
-          >
-            <i className="fa-solid fa-list" />
-            Semua episode
-          </Link>
-        ) : null}
-
-        {data.hasNextEpisode && data.nextEpisode ? (
-          <Link
-            to="/watch/$episodeId"
-            params={{ episodeId: data.nextEpisode.episodeId }}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Episode selanjutnya
-            <i className="fa-solid fa-forward-step" />
-          </Link>
-        ) : (
-          <span />
-        )}
+        <div className="mt-8 space-y-3 lg:mt-0">
+          <h2 className="font-display text-lg font-semibold text-foreground">Daftar Episode</h2>
+          {anime.isPending ? (
+            <p className="text-sm text-muted-foreground">Memuat daftar episode…</p>
+          ) : (
+            <div className="max-h-[32rem] overflow-y-auto lg:max-h-[calc(100vh-8rem)]">
+              <EpisodeList episodes={episodes} activeEpisodeId={episodeId} batchId={batchId} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
