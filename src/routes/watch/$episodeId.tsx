@@ -80,7 +80,7 @@ function WatchPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="lg:grid lg:grid-cols-[1fr_320px] lg:items-start lg:gap-6">
         <div className="space-y-6">
-          <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+          <h1 className="font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             {data.title}
           </h1>
 
@@ -90,9 +90,9 @@ function WatchPage() {
             <VideoPlayer src={stream.data?.data.url ?? null} />
           )}
 
-          <div className="space-y-4 border-2 border-foreground bg-card p-4 shadow-brutal-sm">
+          <div className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="space-y-2">
-              <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Kualitas</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kualitas</p>
               <div className="flex flex-wrap gap-2">
                 {qualities.map((item) => (
                   <button
@@ -103,8 +103,8 @@ function WatchPage() {
                     }}
                     className={
                       item.title === quality
-                        ? "border-2 border-foreground bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground"
-                        : "border-2 border-foreground bg-card px-3 py-1.5 text-sm font-bold text-card-foreground transition-colors hover:bg-accent"
+                        ? "rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground"
+                        : "rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-card-foreground transition-colors hover:bg-accent"
                     }
                   >
                     {item.title}
@@ -114,7 +114,7 @@ function WatchPage() {
             </div>
 
             <div className="space-y-2">
-              <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Server</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Server</p>
               <div className="flex flex-wrap gap-2">
                 {activeServers.map((server) => (
                   <button
@@ -122,8 +122,8 @@ function WatchPage() {
                     onClick={() => setServerId(server.serverId)}
                     className={
                       server.serverId === serverId
-                        ? "border-2 border-foreground bg-secondary px-3 py-1.5 text-sm font-bold text-secondary-foreground"
-                        : "border-2 border-foreground bg-card px-3 py-1.5 text-sm font-bold text-card-foreground transition-colors hover:bg-accent"
+                        ? "rounded-full bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary-foreground"
+                        : "rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-card-foreground transition-colors hover:bg-accent"
                     }
                   >
                     {server.title.trim()}
@@ -141,7 +141,7 @@ function WatchPage() {
               <Link
                 to="/watch/$episodeId"
                 params={{ episodeId: data.prevEpisode.episodeId }}
-                className="shadow-brutal-press inline-flex items-center gap-2 border-2 border-foreground bg-card px-4 py-2 text-sm font-bold text-card-foreground shadow-brutal-sm"
+                className="press-soft inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground shadow-sm transition-colors hover:bg-accent"
               >
                 <i className="fa-solid fa-backward-step" />
                 Episode sebelumnya
@@ -154,7 +154,7 @@ function WatchPage() {
               <Link
                 to="/anime/$animeId"
                 params={{ animeId }}
-                className="shadow-brutal-press inline-flex items-center gap-2 border-2 border-foreground bg-card px-4 py-2 text-sm font-bold text-card-foreground shadow-brutal-sm"
+                className="press-soft inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground shadow-sm transition-colors hover:bg-accent"
               >
                 <i className="fa-solid fa-list" />
                 Semua episode
@@ -165,7 +165,7 @@ function WatchPage() {
               <Link
                 to="/watch/$episodeId"
                 params={{ episodeId: data.nextEpisode.episodeId }}
-                className="shadow-brutal-press inline-flex items-center gap-2 border-2 border-foreground bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-brutal-sm"
+                className="press-soft inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
               >
                 Episode selanjutnya
                 <i className="fa-solid fa-forward-step" />
@@ -177,7 +177,7 @@ function WatchPage() {
         </div>
 
         <div className="mt-8 space-y-3 lg:mt-0">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-foreground">Daftar Episode</h2>
+          <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">Daftar Episode</h2>
           {anime.isPending ? (
             <p className="text-sm text-muted-foreground">Memuat daftar episode…</p>
           ) : (

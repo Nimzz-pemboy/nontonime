@@ -11,9 +11,9 @@ export function AnimeCard({ anime }: { anime: AnimeCardData }) {
     <Link
       to="/anime/$animeId"
       params={{ animeId: anime.animeId }}
-      className="group block border-2 border-foreground bg-card shadow-brutal-sm transition-transform hover:-translate-y-0.5 hover:shadow-brutal"
+      className="group block overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
     >
-      <div className="relative aspect-[2/3] overflow-hidden border-b-2 border-foreground bg-muted">
+      <div className="relative aspect-[2/3] overflow-hidden bg-muted">
         <img
           src={anime.poster}
           alt={anime.title}
@@ -21,14 +21,14 @@ export function AnimeCard({ anime }: { anime: AnimeCardData }) {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {anime.score ? (
-          <span className="absolute left-2 top-2 border-2 border-foreground bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
-            <i className="fa-solid fa-star mr-1" />
+          <span className="glass absolute left-2 top-2 rounded-full px-2 py-0.5 text-xs font-semibold text-foreground">
+            <i className="fa-solid fa-star mr-1 text-primary" />
             {anime.score}
           </span>
         ) : null}
       </div>
       <div className="space-y-1 p-3">
-        <h3 className="line-clamp-2 text-sm font-bold leading-snug text-card-foreground">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-card-foreground">
           {anime.title}
         </h3>
         {meta ? <p className="text-xs font-medium text-muted-foreground">{meta}</p> : null}

@@ -6,6 +6,8 @@ import { EpisodeList } from "@/components/anime/EpisodeList";
 import { ErrorState, LoadingState } from "@/components/anime/StateViews";
 import { animeDetailQuery } from "@/lib/queries";
 import { readHistory, type HistoryItem } from "@/lib/history";
+import { isSubscribed, addSubscription, removeSubscription } from "@/lib/subscriptions";
+import { requestNotificationPermission, showLocalNotification, subscribeToPush } from "@/lib/push";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/anime/$animeId")({
@@ -25,7 +27,7 @@ export const Route = createFileRoute("/anime/$animeId")({
 
 function Pill({ icon, text }: { icon?: string; text: string }) {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 border-2 border-foreground bg-card px-3 py-1 text-xs font-bold text-card-foreground">
+    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-card-foreground">
       {icon ? <i className={`${icon} text-primary`} /> : null}
       {text}
     </span>
@@ -59,15 +61,47 @@ function Synopsis({ paragraphs }: { paragraphs: string[] }) {
   );
 }
 
-function SubscribeButton() {
+function SubscribeButton({ animeId, animeTitle }: { animeId: string; animeTitle: string }) {
   const [subscribed, setSubscribed] = useState(false);
-  // TODO: sambungkan ke API subscribe/notifikasi saat backend tersedia
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    setSubscribed(isSubscribed(animeId));
+  }, [animeId]);
+
+  async function handleClick() {
+    if (subscribed) {
+      removeSubscription(animeId);
+      setSubscribed(false);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const permission = await requestNotificationPermission();
+      if (permission === "granted") {
+        // Subscribe beneran ke Web Push (VAPID) — bukan Firebase. Menyimpan
+        // subscription-nya di server buat trigger pas episode baru rilis
+        // TODO: butuh backend (database + cron) yang belum ada di project ini.
+        await subscribeToPush();
+        await showLocalNotification("Berlangganan aktif", {
+          body: `Kamu bakal dapat notifikasi untuk ${animeTitle}.`,
+        });
+      }
+      addSubscription(animeId, animeTitle);
+      setSubscribed(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <button
-      onClick={() => setSubscribed((value) => !value)}
+      onClick={handleClick}
+      disabled={busy}
       className={cn(
-        "shadow-brutal-press inline-flex w-full items-center justify-center gap-2 border-2 border-foreground px-4 py-3 text-sm font-bold shadow-brutal-sm sm:w-auto",
-        subscribed ? "bg-secondary text-secondary-foreground" : "bg-card text-card-foreground",
+        "press-soft inline-flex w-full items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm font-semibold shadow-sm transition-colors disabled:opacity-60 sm:w-auto",
+        subscribed ? "bg-secondary text-secondary-foreground" : "bg-card text-card-foreground hover:bg-accent",
       )}
     >
       <i className={subscribed ? "fa-solid fa-bell" : "fa-regular fa-bell"} />
@@ -112,19 +146,19 @@ function AnimeDetailPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 overflow-x-hidden px-4 pb-8">
-      <div className="relative -mx-4 sm:mx-0 sm:overflow-hidden sm:border-2 sm:border-foreground">
-        <div className="relative h-64 w-full overflow-hidden border-b-2 border-foreground sm:h-80">
+      <div className="relative -mx-4 sm:mx-0 sm:overflow-hidden sm:rounded-2xl sm:border sm:border-border">
+        <div className="relative h-64 w-full overflow-hidden sm:h-80">
           <img src={anime.poster} alt={anime.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
           {anime.status ? (
-            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 border-2 border-foreground bg-background px-3 py-1 text-xs font-bold text-foreground">
+            <span className="glass absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-foreground">
               <i className={cn("fa-solid text-primary", isCompleted ? "fa-circle-check" : "fa-tower-broadcast")} />
               {anime.status}
             </span>
           ) : null}
         </div>
         <div className="relative -mt-14 space-y-1 px-4 sm:-mt-16">
-          <h1 className="font-display text-2xl font-extrabold uppercase tracking-tight text-foreground drop-shadow-sm sm:text-4xl">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground drop-shadow-sm sm:text-4xl">
             {anime.title}
           </h1>
           {anime.japanese ? <p className="text-sm text-muted-foreground">{anime.japanese}</p> : null}
@@ -150,7 +184,7 @@ function AnimeDetailPage() {
                 to="/genre/$genreId"
                 params={{ genreId: genre.genreId }}
                 search={{ page: 1 }}
-                className="border-2 border-foreground bg-card px-3 py-1 text-xs font-bold text-card-foreground transition-colors hover:bg-accent"
+                className="rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-card-foreground transition-colors hover:bg-accent"
               >
                 {genre.title}
               </Link>
@@ -163,20 +197,20 @@ function AnimeDetailPage() {
             <Link
               to="/watch/$episodeId"
               params={{ episodeId: primaryTarget.episodeId }}
-              className="shadow-brutal-press inline-flex w-full items-center justify-center gap-2 border-2 border-foreground bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-brutal-sm sm:w-auto"
+              className="press-soft inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90 sm:w-auto"
             >
               <i className="fa-solid fa-play" />
               {primaryLabel}
             </Link>
           ) : null}
-          <SubscribeButton />
+          <SubscribeButton animeId={animeId} animeTitle={anime.title} />
         </div>
 
         {batchId ? (
           <Link
             to="/download/$batchId"
             params={{ batchId }}
-            className="inline-flex items-center gap-2 border-2 border-foreground bg-accent px-3 py-2 text-sm font-bold text-accent-foreground"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-80"
           >
             <i className="fa-solid fa-box-archive" />
             Batch download (semua episode)

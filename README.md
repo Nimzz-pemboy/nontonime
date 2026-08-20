@@ -34,10 +34,16 @@ Nontonime adalah platform streaming anime dengan subtitle Indonesia, dibangun fu
 | **Jadwal Rilis** | Jadwal tayang anime per hari dalam seminggu, lengkap dengan poster |
 | **Pencarian** | Cari judul anime dari seluruh katalog |
 | **Genre** | Jelajahi anime berdasarkan kategori genre |
-| **Detail Anime** | Sinopsis, skor, genre, dan daftar episode per judul |
-| **Nonton Episode** | Video player dengan pilihan kualitas dan server streaming |
-| **Download Batch** | Tautan unduhan per batch, dikelompokkan berdasarkan resolusi |
+| **Detail Anime** | Hero backdrop, info ringkas, sinopsis collapsible, tombol lanjut nonton & subscribe |
+| **Nonton Episode** | Video player dengan pilihan kualitas/server, plus daftar episode di panel samping |
+| **Download Batch & Per-Episode** | Tautan unduhan per batch maupun per episode (pilihan resolusi) |
 | **Riwayat Tontonan** | Tersimpan otomatis di perangkat, tanpa perlu login |
+| **Notifikasi** | Subscribe per anime, notifikasi lokal via Web Push API (lihat bagian [Notifikasi](#notifikasi)) |
+| **Navigasi Mobile** | Bottom tab bar (Home/Jadwal/History/Download/Profil) khusus layar kecil |
+
+## Tampilan
+
+UI memakai gaya minimalis-lembut: sudut membulat, border tipis, bayangan halus, dan efek blur kaca (`glass`) di header serta bottom nav. Semua token warna/radius diatur terpusat di `src/styles.css`.
 
 ## Tumpukan Teknologi
 
@@ -47,6 +53,7 @@ Nontonime adalah platform streaming anime dengan subtitle Indonesia, dibangun fu
 - **TypeScript** — penulisan kode yang lebih aman dan terstruktur
 - **[Tailwind CSS v4](https://tailwindcss.com/)** — styling utility-first
 - **[Video.js](https://videojs.com/)** — pemutar video untuk streaming episode
+- **Web Push API** — notifikasi native browser/HP lewat Service Worker + VAPID (bukan Firebase Cloud Messaging)
 - **[Nitro](https://nitro.build/)** (preset Vercel) — server runtime untuk deployment
 
 ## Pengembangan Lokal
@@ -57,10 +64,13 @@ Butuh Node.js terpasang di komputer.
 git clone https://github.com/Nimzz-pemboy/nontonime.git
 cd nontonime
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 Aplikasi akan berjalan di `http://localhost:8080`.
+
+`.env.example` sudah berisi VAPID key siap pakai untuk fitur notifikasi (lihat bagian [Notifikasi](#notifikasi)) — tinggal disalin ke `.env`.
 
 ### Skrip yang tersedia
 
@@ -85,22 +95,51 @@ Proyek ini di-deploy di **Vercel** menggunakan preset Nitro `vercel`, sehingga s
 
 **Live:** [nontonime.vercel.app](https://nontonime.vercel.app/)
 
+## Notifikasi
+
+Fitur subscribe/notifikasi di halaman detail anime memakai **Web Push API bawaan browser** (Service Worker + `PushManager` + VAPID) — bukan Firebase Cloud Messaging maupun SDK pihak ketiga lain.
+
+Yang sudah aktif:
+- Minta izin notifikasi & bikin Push Subscription asli lewat tombol **Subscribe**
+- Notifikasi lokal langsung muncul di bar notifikasi HP (konfirmasi subscribe, tombol tes di halaman **Profil**)
+- Anime yang di-subscribe tersimpan di perangkat (`src/lib/subscriptions.ts`), bisa dilihat/dihapus dari halaman Profil
+- Service worker (`public/sw.js`) sudah siap menerima & menampilkan push message beneran, termasuk buka halaman anime terkait saat notifikasi diklik
+
+Yang **belum** ada (perlu dikerjakan terpisah kalau mau notifikasi otomatis saat episode baru rilis):
+- Backend untuk menyimpan Push Subscription per pengguna (database)
+- Cron/scheduler untuk mengecek episode baru dan memicu pengiriman push (pakai kunci privat VAPID + library `web-push` di server)
+
+Variabel environment terkait (lihat `.env.example`):
+
+| Variabel | Dipakai di | Keterangan |
+|---|---|---|
+| `VITE_VAPID_PUBLIC_KEY` | Client | Aman diekspos, dipakai saat `pushManager.subscribe()` |
+| `VAPID_PRIVATE_KEY` | Server (belum dipakai) | **Jangan** taruh di kode client; simpan sebagai secret di hosting saat backend pengirim push dibuat |
+
+Generate ulang key sendiri kapan saja lewat `npx web-push generate-vapid-keys`.
+
 ## Struktur Proyek
 
 ```
 src/
 ├── components/
-│   ├── anime/       # Komponen khusus fitur anime (grid, player, state view)
+│   ├── anime/       # Komponen khusus fitur anime (grid, player, nav, episode list, state view)
 │   └── ui/          # Komponen UI dasar
-├── lib/             # Query, tipe data, konfigurasi situs, utilitas
+├── lib/             # Query, tipe data, konfigurasi situs, riwayat, subscribe, push, utilitas
 ├── routes/          # Routing berbasis file (TanStack Router)
 │   ├── anime/       # Detail anime
 │   ├── watch/       # Halaman nonton episode
-│   ├── download/    # Halaman batch download
-│   └── genre/       # Daftar & filter genre
+│   ├── download/    # Halaman batch download & daftar download
+│   ├── genre/       # Daftar & filter genre
+│   └── profil.tsx   # Pengaturan tema & notifikasi
 ├── router.tsx
 ├── server.ts
 └── start.ts         # Konfigurasi middleware global (termasuk proteksi CSRF)
+
+public/
+├── logo.svg         # Logo situs (ganti dengan logo asli kapan pun)
+├── sw.js            # Service worker untuk notifikasi push
+└── hero-bg.mp4      # (opsional) video background hero Beranda — tambahkan sendiri
 ```
 
 ## Lisensi

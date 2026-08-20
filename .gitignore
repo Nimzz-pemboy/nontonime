@@ -16,6 +16,9 @@ dist-ssr
 .nitro
 *.local
 
+# Environment variables
+.env
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

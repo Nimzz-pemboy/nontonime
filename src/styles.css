@@ -64,7 +64,7 @@
 }
 
 :root {
-  --radius: 0rem;
+  --radius: 0.75rem;
   --background: oklch(0.985 0.006 90);
   --foreground: oklch(0.21 0.02 260);
   --card: oklch(1 0 0);
@@ -81,8 +81,8 @@
   --accent-foreground: oklch(0.25 0.03 260);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.21 0.02 260);
-  --input: oklch(0.21 0.02 260);
+  --border: oklch(0.9 0.01 90);
+  --input: oklch(0.9 0.01 90);
   --ring: oklch(0.62 0.19 25);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -116,8 +116,8 @@
   --accent-foreground: oklch(0.96 0.005 250);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.96 0.005 250);
-  --input: oklch(0.96 0.005 250);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.68 0.18 28);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -153,17 +153,15 @@
 }
 
 @layer utilities {
-  .shadow-brutal {
-    box-shadow: 4px 4px 0 0 var(--color-foreground);
+  .glass {
+    background-color: color-mix(in oklch, var(--color-background) 85%, transparent);
+    backdrop-filter: blur(8px);
   }
-  .shadow-brutal-sm {
-    box-shadow: 2px 2px 0 0 var(--color-foreground);
+  .press-soft {
+    transition: transform 0.15s ease, opacity 0.15s ease;
   }
-  .shadow-brutal-press {
-    transition: box-shadow 0.1s ease, transform 0.1s ease;
-  }
-  .shadow-brutal-press:active {
-    box-shadow: 1px 1px 0 0 var(--color-foreground);
-    transform: translate(3px, 3px);
+  .press-soft:active {
+    transform: scale(0.97);
+    opacity: 0.9;
   }
 }
