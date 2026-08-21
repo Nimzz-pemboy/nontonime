@@ -37,7 +37,9 @@ export function EpisodeDownloadButton({
         ) : isError || formats.length === 0 ? (
           <div className="space-y-2">
             <p className="text-xs text-muted-foreground">
-              Link download per-episode belum tersedia untuk episode ini. Coba unduh lewat batch.
+              {batchId
+                ? "Link download per-episode belum tersedia untuk episode ini. Coba unduh lewat batch."
+                : "Link download per-episode belum tersedia untuk episode ini."}
             </p>
             {batchId ? (
               <Link

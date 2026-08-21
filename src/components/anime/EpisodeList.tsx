@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
+import { cn, formatViews } from "@/lib/utils";
 import type { EpisodeListItem } from "@/lib/anime-types";
 import { EpisodeDownloadButton } from "./EpisodeDownloadButton";
 
@@ -30,7 +30,7 @@ export function EpisodeList({
               {episode.views ? (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                   <i className="fa-solid fa-eye" />
-                  {episode.views}
+                  {formatViews(episode.views)}
                 </span>
               ) : null}
             </div>

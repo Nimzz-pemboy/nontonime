@@ -134,8 +134,18 @@ function ProfilPage() {
 
       <NotificationCard />
 
-      <div className="rounded-xl border border-border bg-card p-4">
-        <Link to="/riwayat" className="flex items-center justify-between text-sm font-medium text-card-foreground">
+      <div className="divide-y divide-border rounded-xl border border-border bg-card">
+        <Link
+          to="/watchlist"
+          className="flex items-center justify-between px-4 py-3 text-sm font-medium text-card-foreground"
+        >
+          Watchlist
+          <i className="fa-solid fa-chevron-right text-xs text-muted-foreground" />
+        </Link>
+        <Link
+          to="/riwayat"
+          className="flex items-center justify-between px-4 py-3 text-sm font-medium text-card-foreground"
+        >
           Riwayat Tontonan
           <i className="fa-solid fa-chevron-right text-xs text-muted-foreground" />
         </Link>

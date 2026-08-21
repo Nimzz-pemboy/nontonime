@@ -16,6 +16,7 @@ import { Route as OngoingRouteImport } from './routes/ongoing'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RiwayatRouteImport } from './routes/riwayat'
 import { Route as TamatRouteImport } from './routes/tamat'
+import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as AnimeAnimeIdRouteImport } from './routes/anime/$animeId'
 import { Route as DownloadBatchIdRouteImport } from './routes/download/$batchId'
 import { Route as DownloadIndexRouteImport } from './routes/download/index'
@@ -58,6 +59,11 @@ const TamatRoute = TamatRouteImport.update({
   path: '/tamat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WatchlistRoute = WatchlistRouteImport.update({
+  id: '/watchlist',
+  path: '/watchlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnimeAnimeIdRoute = AnimeAnimeIdRouteImport.update({
   id: '/anime/$animeId',
   path: '/anime/$animeId',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
+  '/watchlist': typeof WatchlistRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
+  '/watchlist': typeof WatchlistRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
   '/tamat': typeof TamatRoute
+  '/watchlist': typeof WatchlistRoute
   '/anime/$animeId': typeof AnimeAnimeIdRoute
   '/download/$batchId': typeof DownloadBatchIdRoute
   '/genre/$genreId': typeof GenreGenreIdRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/profil'
     | '/riwayat'
     | '/tamat'
+    | '/watchlist'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/profil'
     | '/riwayat'
     | '/tamat'
+    | '/watchlist'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/profil'
     | '/riwayat'
     | '/tamat'
+    | '/watchlist'
     | '/anime/$animeId'
     | '/download/$batchId'
     | '/genre/$genreId'
@@ -191,6 +203,7 @@ export interface RootRouteChildren {
   ProfilRoute: typeof ProfilRoute
   RiwayatRoute: typeof RiwayatRoute
   TamatRoute: typeof TamatRoute
+  WatchlistRoute: typeof WatchlistRoute
   AnimeAnimeIdRoute: typeof AnimeAnimeIdRoute
   DownloadBatchIdRoute: typeof DownloadBatchIdRoute
   GenreGenreIdRoute: typeof GenreGenreIdRoute
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TamatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/watchlist': {
+      id: '/watchlist'
+      path: '/watchlist'
+      fullPath: '/watchlist'
+      preLoaderRoute: typeof WatchlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/anime/$animeId': {
       id: '/anime/$animeId'
       path: '/anime/$animeId'
@@ -303,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfilRoute: ProfilRoute,
   RiwayatRoute: RiwayatRoute,
   TamatRoute: TamatRoute,
+  WatchlistRoute: WatchlistRoute,
   AnimeAnimeIdRoute: AnimeAnimeIdRoute,
   DownloadBatchIdRoute: DownloadBatchIdRoute,
   GenreGenreIdRoute: GenreGenreIdRoute,

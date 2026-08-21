@@ -38,8 +38,11 @@ Nontonime adalah platform streaming anime dengan subtitle Indonesia, dibangun fu
 | **Nonton Episode** | Video player dengan pilihan kualitas/server, plus daftar episode di panel samping |
 | **Download Batch & Per-Episode** | Tautan unduhan per batch maupun per episode (pilihan resolusi) |
 | **Riwayat Tontonan** | Tersimpan otomatis di perangkat, tanpa perlu login |
+| **Watchlist** | Simpan anime buat ditonton nanti, tersimpan di perangkat |
 | **Notifikasi** | Subscribe per anime, notifikasi lokal via Web Push API (lihat bagian [Notifikasi](#notifikasi)) |
 | **Navigasi Mobile** | Bottom tab bar (Home/Jadwal/History/Download/Profil) khusus layar kecil |
+| **Sumber Cadangan** | Scrape otomatis dari situs lain kalau anime tidak ada di API utama (lihat bagian [Sumber Cadangan](#sumber-cadangan)) |
+| **PWA** | Bisa di-install ke homescreen HP (manifest + service worker) |
 
 ## Tampilan
 
@@ -118,6 +121,21 @@ Variabel environment terkait (lihat `.env.example`):
 
 Generate ulang key sendiri kapan saja lewat `npx web-push generate-vapid-keys`.
 
+## Sumber Cadangan
+
+API utama (`sankavollerei`) kadang tidak punya anime yang lebih lama. Untuk kasus itu, halaman **Cari** otomatis mencoba scrape langsung dari dua situs lain sebagai cadangan:
+
+- **NontonAnimeID** (`src/lib/scrapers/nontonanimeid.server.ts`)
+- **Nimegami** (`src/lib/scrapers/nimegami.server.ts`)
+
+Cara kerjanya:
+1. Pencarian tetap lewat API utama dulu.
+2. Kalau hasilnya kosong, otomatis coba scrape kedua situs di atas sekaligus (`src/lib/scrapers/scrape.functions.ts`), hasilnya ditandai dengan badge sumber di setiap kartu anime.
+3. Detail anime, daftar episode, sampai nonton episode dari sumber cadangan otomatis kebaca lewat route yang sama (`/anime/$animeId`, `/watch/$episodeId`) — ID-nya ditandai dengan prefix (`naid__…` / `gami__…`) lewat `src/lib/scrapers/id-codec.ts`, jadi tidak perlu route terpisah.
+4. Batch download tidak tersedia untuk anime dari sumber cadangan (link download per-episode tetap dicoba dulu, baru fallback ke pesan "belum tersedia" kalau memang tidak ada).
+
+Scraper ini hasil adaptasi dari script yang sudah ada sebelumnya, jadi **belum sempat dites langsung ke situs aslinya** di lingkungan pengembangan ini (tidak ada akses jaringan keluar). Kalau struktur HTML situs sumber berubah, regex ekstraksinya mungkin perlu disesuaikan ulang.
+
 ## Struktur Proyek
 
 ```
@@ -125,21 +143,25 @@ src/
 ├── components/
 │   ├── anime/       # Komponen khusus fitur anime (grid, player, nav, episode list, state view)
 │   └── ui/          # Komponen UI dasar
-├── lib/             # Query, tipe data, konfigurasi situs, riwayat, subscribe, push, utilitas
+├── lib/
+│   ├── scrapers/    # Scraper sumber cadangan (NontonAnimeID, Nimegami) + id-codec & normalizer
+│   └── ...          # Query, tipe data, konfigurasi situs, riwayat, watchlist, subscribe, push, utilitas
 ├── routes/          # Routing berbasis file (TanStack Router)
 │   ├── anime/       # Detail anime
 │   ├── watch/       # Halaman nonton episode
 │   ├── download/    # Halaman batch download & daftar download
 │   ├── genre/       # Daftar & filter genre
+│   ├── watchlist.tsx
 │   └── profil.tsx   # Pengaturan tema & notifikasi
 ├── router.tsx
 ├── server.ts
 └── start.ts         # Konfigurasi middleware global (termasuk proteksi CSRF)
 
 public/
-├── logo.svg         # Logo situs (ganti dengan logo asli kapan pun)
-├── sw.js            # Service worker untuk notifikasi push
-└── hero-bg.mp4      # (opsional) video background hero Beranda — tambahkan sendiri
+├── logo.svg               # Logo situs (ganti dengan logo asli kapan pun)
+├── manifest.webmanifest   # Manifest PWA (installable ke homescreen)
+├── sw.js                  # Service worker untuk notifikasi push
+└── hero-bg.mp4            # (opsional) video background hero Beranda — tambahkan sendiri
 ```
 
 ## Lisensi

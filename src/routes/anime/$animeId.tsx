@@ -8,7 +8,8 @@ import { animeDetailQuery } from "@/lib/queries";
 import { readHistory, type HistoryItem } from "@/lib/history";
 import { isSubscribed, addSubscription, removeSubscription } from "@/lib/subscriptions";
 import { requestNotificationPermission, showLocalNotification, subscribeToPush } from "@/lib/push";
-import { cn } from "@/lib/utils";
+import { isInWatchlist, toggleWatchlist } from "@/lib/watchlist";
+import { cn, formatViews } from "@/lib/utils";
 
 export const Route = createFileRoute("/anime/$animeId")({
   head: ({ params }) => {
@@ -58,6 +59,27 @@ function Synopsis({ paragraphs }: { paragraphs: string[] }) {
         <i className={cn("fa-solid text-xs", expanded ? "fa-chevron-up" : "fa-chevron-down")} />
       </button>
     </section>
+  );
+}
+
+function WatchlistButton({ animeId, title, poster }: { animeId: string; title: string; poster: string }) {
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setSaved(isInWatchlist(animeId));
+  }, [animeId]);
+
+  return (
+    <button
+      onClick={() => setSaved(toggleWatchlist(animeId, title, poster))}
+      aria-label={saved ? "Hapus dari watchlist" : "Simpan ke watchlist"}
+      className={cn(
+        "press-soft inline-flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-border shadow-sm transition-colors",
+        saved ? "bg-secondary text-secondary-foreground" : "bg-card text-card-foreground hover:bg-accent",
+      )}
+    >
+      <i className={saved ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark"} />
+    </button>
   );
 }
 
@@ -156,6 +178,12 @@ function AnimeDetailPage() {
               {anime.status}
             </span>
           ) : null}
+          {anime.sourceLabel ? (
+            <span className="glass absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-foreground">
+              <i className="fa-solid fa-plug-circle-bolt text-primary" />
+              Sumber cadangan: {anime.sourceLabel}
+            </span>
+          ) : null}
         </div>
         <div className="relative -mt-14 space-y-1 px-4 sm:-mt-16">
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground drop-shadow-sm sm:text-4xl">
@@ -173,7 +201,7 @@ function AnimeDetailPage() {
           {anime.type ? <Pill text={anime.type} /> : null}
           {anime.episodes ? <Pill text={`${anime.episodes} episode`} /> : null}
           {anime.duration ? <Pill text={anime.duration} /> : null}
-          {anime.views ? <Pill icon="fa-solid fa-eye" text={`${anime.views} views`} /> : null}
+          {anime.views ? <Pill icon="fa-solid fa-eye" text={`${formatViews(anime.views)} views`} /> : null}
         </div>
 
         {anime.genreList?.length ? (
@@ -204,6 +232,7 @@ function AnimeDetailPage() {
             </Link>
           ) : null}
           <SubscribeButton animeId={animeId} animeTitle={anime.title} />
+          <WatchlistButton animeId={animeId} title={anime.title} poster={anime.poster} />
         </div>
 
         {batchId ? (
